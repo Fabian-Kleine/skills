@@ -38,10 +38,17 @@ Use `git` and plain file copies so the steps work in bash and in PowerShell. On 
 
 5. **Copy the picked skills into the cache** at `<cache>/skills/<name>`. Remove the existing folder in the cache first so files deleted locally disappear remotely. This skill only adds and updates; deleting a skill from the remote happens only if the user asks for it explicitly.
 
-6. **Commit.** Run `git -C <cache> add -A` and check `git -C <cache> status --porcelain`. If empty, report nothing to push. Otherwise commit with a clear message such as `Add skill: <name>` or `Update skills: <a>, <b>`. If git has no `user.name` / `user.email` configured, ask the user rather than inventing one.
+6. **Update the README table.** `<cache>/README.md` has a table with the columns Skill, Description, Source. Keep it in step with what is being pushed:
+   - Add a row for each `new` skill and refresh the row of each `modified` skill whose description changed. Link the name to `skills/<name>/SKILL.md`.
+   - Take the description from the skill's frontmatter `description`, shortened to one or two plain sentences (no trigger phrases, no em-dashes).
+   - Source is `Original` for the user's own skills. For third-party skills use a link to the upstream repo, taken from the lock file's `sourceUrl` (without the `.git` suffix).
+   - Keep rows sorted alphabetically by skill name and leave the intro text untouched. If the README or table is missing, recreate it in the same shape.
+   The README change goes in the same commit as the skills.
 
-7. **Push** with `git -C <cache> push origin HEAD`.
+7. **Commit.** Run `git -C <cache> add -A` and check `git -C <cache> status --porcelain`. If empty, report nothing to push. Otherwise commit with a clear message such as `Add skill: <name>` or `Update skills: <a>, <b>`. If git has no `user.name` / `user.email` configured, ask the user rather than inventing one.
+
+8. **Push** with `git -C <cache> push origin HEAD`.
    - If rejected as non-fast-forward, run `git -C <cache> pull --rebase origin HEAD` once and push again.
    - If authentication fails, tell the user to sign in (for example `gh auth login`, or a credential manager prompt) and stop. Do not try other transports or workarounds.
 
-8. **Report** in a few lines: which skills were pushed (new vs updated), the commit hash, and the repo link.
+9. **Report** in a few lines: which skills were pushed (new vs updated), that the README table was updated, the commit hash, and the repo link.
